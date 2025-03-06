@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Billings {
+  id       String @id @default(uuid())
+  plan     String
+  credits  Int
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+model Bookings {
+  id         String   @id
+  date       DateTime
+  slot       String
+  email      String
+  customerId String
+  domainId   String   @unique
+  Customer   Customer @relation(fields: [customerId], references: [id])
+  Domain     Domain   @relation(fields: [domainId], references: [id])
+}
+
+model Campaign {
+  id        String   @id @default(uuid())
+  name      String
+  customers String[]
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  User      User     @relation(fields: [userId], references: [id])
+  Domain    Domain[]
+}
+
+model ChatMessage {
+  id            String   @id @default(uuid())
+  message       String
+  role          String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  chatRoomId    String
+  seen          Boolean
+  chatRoom      Chatbot  @relation(fields: [chatRoomId], references: [id])
+}
+
+// model ChatRoom {
+//   id          String        @id
+//   live        Boolean
+//   mailed      Boolean
+//   createdAt   DateTime      @default(now())
+//   updatedAt   DateTime
+//   customerId  String
+//   chatMessages Chatbot[]
+//   customer    Customer      @relation(fields: [customerId], references: [id])
+// }
+
+model Chatbot {
+  id              String @id @default(uuid())
+  welcomeMessage  String
+  icon            String
+  background      String
+  textColor       String
+  helpdesk        Boolean
+  domainId        String
+  domain          Domain @relation(fields: [domainId], references: [id])
+
+  // Relations
+  chatMessages ChatMessage[]
+}
+
+model Customer {
+  id        String @id @default(uuid())
+  email     String
+  demand    String
+  domainId  String
+  domain    Domain @relation(fields: [domainId], references: [id])
+
+  // Relations
+  bookings Bookings[]
+}
+
+// model CustomerResponses {
+//   id         String   @id
+//   question   String
+//   answered   String
+//   customerId String
+//   Customer   Customer @relation(fields: [customerId], references: [id])
+// }
+
+model Domain {
+  id          String   @id @default(uuid())
+  name        String
+  icon        String
+  userId      String
+  campaignId  String
+  user        User     @relation(fields: [userId], references: [id])
+  campaign    Campaign @relation(fields: [campaignId], references: [id])
+
+  // Relations
+  chatbots       Chatbot[]
+  filtersQuestions FiltersQuestions[]
+  customers       Customer[]
+  products        Product[]
+  bookings        Bookings[]
+}
+
+model FiltersQuestions {
+  id       String @id
+  question String
+  answered String
+  domainId String
+  Domain   Domain @relation(fields: [domainId], references: [id])
+}
+
+// model Helpdesk {
+//   id       String @id
+//   question String
+//   answer   String
+//   domainId String @unique
+//   Domain   Domain @relation(fields: [domainId], references: [id])
+// }
+
+model Product {
+  id        String   @id
+  name      String
+  price     Int
+  image     String
+  createdAt DateTime @default(now())
+  domainId  String
+  Domain    Domain   @relation(fields: [domainId], references: [id])
+}
+
+model User {
+  id        String     @id @default(uuid())
+  fullname  String     
+  clerkId   String    @unique
+  type      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime  @updatedAt
+  stripeId  String
+
+  Billings  Billings[]
+  Campaign  Campaign[]
+  Domain    Domain[]
+}
+
+enum Role {
+  User
+}
