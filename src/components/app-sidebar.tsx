@@ -15,22 +15,27 @@ import {
 // Menu items.
 const items = [
   {
-    title: "Home",
-    url: "#",
+    title: "Dashboard",
+    url: "/dashboard",
     icon: Home,
   },
   {
-    title: "Inbox",
+    title: "Conversations",
     url: "#",
     icon: Inbox,
   },
   {
-    title: "Calendar",
+    title: "Integrations",
     url: "#",
     icon: Calendar,
   },
   {
-    title: "Search",
+    title: "Appointments",
+    url: "#",
+    icon: Search,
+  },
+  {
+    title: "Email Marketing",
     url: "#",
     icon: Search,
   },
@@ -46,7 +51,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -61,6 +66,7 @@ export function AppSidebar() {
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
+          <SidebarGroupLabel>Domains</SidebarGroupLabel>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
