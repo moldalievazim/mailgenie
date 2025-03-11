@@ -1,8 +1,8 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
-// import { createUser } from "@/actions/createUser";
-import { prisma } from "@/lib/prisma";
+import { createUser } from "@/actions/createUser";
+// import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   console.log("Webhook received");
@@ -60,14 +60,11 @@ export async function POST(req: Request) {
     const { id, first_name, last_name } = evt.data;
 
     try {
-      const newUser = await prisma.user.upsert({
-        where: { clerkId: id },
-        create: {
-          clerkId: id,
-          fullname: `${first_name || ""} ${last_name || ""}`.trim(),
-          type: "user",
-        },
-        update: {},
+      const newUser = await createUser({
+        clerkId: id,
+        fullname: `${first_name || ""} ${last_name || ""}`.trim(),
+        type: "user",
+        stripeId: "",
       });
 
       console.log("User created successfully:", newUser);
