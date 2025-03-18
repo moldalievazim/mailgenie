@@ -143,9 +143,9 @@ model User {
   updatedAt DateTime  @updatedAt
   stripeId  String
 
-  Billings  Billings[]
-  Campaign  Campaign[]
-  Domain    Domain[]
+  billings  Billings[]
+  campaigns  Campaign[]
+  domains    Domain[]
 }
 
 enum Role {
