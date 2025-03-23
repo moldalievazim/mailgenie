@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
-import { onGetAllAccountDomains } from "../settings";
+import { onGetAllAccountDomains } from "../settings.ts";
 
 export const onCompleteUserRegistration = async (
   fullname: string,

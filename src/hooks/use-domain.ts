@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AddDomainInput, AddDomainSchema } from "@/schemas/settings.schema";
 // import { UploadClient } from "@uploadcare/upload-client";
-import { onIntegrateDomain } from "@/actions/settings";
+import { onIntegrateDomain } from "@/actions/settings.ts";
 import { useToast } from "@/hooks/use-toast";
 
 type DomainResponse = {

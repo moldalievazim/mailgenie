@@ -9,9 +9,15 @@ datasource db {
 
 model Billings {
   id       String @id @default(uuid())
+  fullname String
+  clerkId  String
+  stripeId String
+  type     String
   plan     String
   credits  Int
   userId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   user     User   @relation(fields: [userId], references: [id])
 }
 
@@ -23,7 +29,7 @@ model Bookings {
   customerId String
   domainId   String   @unique
   Customer   Customer @relation(fields: [customerId], references: [id])
-  Domain     Domain   @relation(fields: [domainId], references: [id])
+  domain     Domain   @relation(fields: [domainId], references: [id])
 }
 
 model Campaign {
@@ -33,7 +39,8 @@ model Campaign {
   userId    String   @unique
   createdAt DateTime @default(now())
   User      User     @relation(fields: [userId], references: [id])
-  Domain    Domain[]
+
+  domains   Domain[]
 }
 
 model ChatMessage {
@@ -47,17 +54,6 @@ model ChatMessage {
   chatRoom      Chatbot  @relation(fields: [chatRoomId], references: [id])
 }
 
-// model ChatRoom {
-//   id          String        @id
-//   live        Boolean
-//   mailed      Boolean
-//   createdAt   DateTime      @default(now())
-//   updatedAt   DateTime
-//   customerId  String
-//   chatMessages Chatbot[]
-//   customer    Customer      @relation(fields: [customerId], references: [id])
-// }
-
 model Chatbot {
   id              String @id @default(uuid())
   welcomeMessage  String
@@ -68,7 +64,6 @@ model Chatbot {
   domainId        String
   domain          Domain @relation(fields: [domainId], references: [id])
 
-  // Relations
   chatMessages ChatMessage[]
 }
 
@@ -79,28 +74,18 @@ model Customer {
   domainId  String
   domain    Domain @relation(fields: [domainId], references: [id])
 
-  // Relations
   bookings Bookings[]
 }
-
-// model CustomerResponses {
-//   id         String   @id
-//   question   String
-//   answered   String
-//   customerId String
-//   Customer   Customer @relation(fields: [customerId], references: [id])
-// }
-
 model Domain {
-  id          String   @id @default(uuid())
-  name        String
-  icon        String
-  userId      String
-  campaignId  String
-  user        User     @relation(fields: [userId], references: [id])
+  id        String   @id @default(uuid())
+  domain    String   @unique
+  icon      String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   campaign    Campaign @relation(fields: [campaignId], references: [id])
-
-  // Relations
+  
   chatbots       Chatbot[]
   filtersQuestions FiltersQuestions[]
   customers       Customer[]
@@ -113,16 +98,8 @@ model FiltersQuestions {
   question String
   answered String
   domainId String
-  Domain   Domain @relation(fields: [domainId], references: [id])
+  domain   Domain @relation(fields: [domainId], references: [id])
 }
-
-// model Helpdesk {
-//   id       String @id
-//   question String
-//   answer   String
-//   domainId String @unique
-//   Domain   Domain @relation(fields: [domainId], references: [id])
-// }
 
 model Product {
   id        String   @id
@@ -131,21 +108,36 @@ model Product {
   image     String
   createdAt DateTime @default(now())
   domainId  String
-  Domain    Domain   @relation(fields: [domainId], references: [id])
+  domain    Domain   @relation(fields: [domainId], references: [id])
 }
 
 model User {
-  id        String     @id @default(uuid())
-  fullname  String     
-  clerkId   String    @unique
-  type      String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime  @updatedAt
-  stripeId  String
+  id           String         @id @default(uuid())
+  fullname     String
+  clerkId      String         @unique
+  type         String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  stripeId     String?        @unique
+  subscription Subscription?
+  domains      Domain[]
+  billings     Billings[]
+  campaigns    Campaign[]
+}
 
-  billings  Billings[]
-  campaigns  Campaign[]
-  domains    Domain[]
+model Subscription {
+  id        String           @id @default(uuid())
+  userId    String           @unique
+  plan      SubscriptionPlan @default(FREE)
+  startDate DateTime         @default(now())
+  endDate   DateTime?
+  User      User             @relation(fields: [userId], references: [id])
+}
+
+enum SubscriptionPlan {
+  FREE
+  PRO
+  ENTERPRISE
 }
 
 enum Role {

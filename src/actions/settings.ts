@@ -3,6 +3,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { SubscriptionPlan } from "@prisma/client";
 
 export const onIntegrateDomain = async (
   campaignId: string,
@@ -13,23 +14,20 @@ export const onIntegrateDomain = async (
   if (!user) return { status: 401, message: "Unauthorized" };
 
   try {
-    const dbUser = await prisma.user.findFirst({
-      where: { clerkId: user.id },
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
       include: {
         domains: true,
-        billings: {
-          orderBy: { id: "desc" },
-          take: 1,
-        },
-        campaigns: {
-          take: 1,
-        },
+        subscription: true,
       },
     });
 
     if (!dbUser) {
       return { status: 404, message: "User not found" };
     }
+
+    const currentDomainCount = dbUser.domains.length;
+    const subscriptionPlan = dbUser.subscription?.plan || SubscriptionPlan.FREE;
 
     // Check if the domain already exists
     const existingDomain = await prisma.domain.findFirst({
