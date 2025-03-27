@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import UploadButton from "@/components/upload-button";
-import FormGenerator, { FormField } from "@/components/forms/form-generator";
+import FormGenerator from "@/components/forms/form-generator";
 import {
   Dialog,
   DialogContent,
@@ -63,20 +63,6 @@ const DomainMenu = ({ domains, min }: Props) => {
     campaignId?: string;
   };
 
-  const formFields: FormField<FormValues>[] = [
-    {
-      name: "name",
-      label: "Domain Name",
-      type: "text",
-      placeholder: "e.g., mywebsite.com",
-    },
-    {
-      name: "icon",
-      label: "Domain Icon",
-      type: "hidden",
-    },
-  ];
-
   return (
     <div className={cn("flex flex-col gap-3", min ? "mt-6" : "mt-3")}>
       <div className="flex justify-between w-full items-center">
@@ -103,7 +89,7 @@ const DomainMenu = ({ domains, min }: Props) => {
             <DialogTitle>Add New Domain</DialogTitle>
             <p className="text-sm text-gray-500 mt-2">
               Add a domain where you want to integrate your chatbot. This can be
-              your existing website or a new site you're planning to build.
+              your existing website or a new site you are planning to build.
             </p>
           </DialogHeader>
           <form onSubmit={onSubmit} className="space-y-4">
@@ -143,6 +129,7 @@ const DomainMenu = ({ domains, min }: Props) => {
                     className="object-cover rounded-lg"
                   />
                   <button
+                    title="close"
                     type="button"
                     onClick={() => setIconUrl("")}
                     className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1"

@@ -1,3 +1,9 @@
+import { PageHeader } from "@/components/page-header";
+
 export default function IntegrationsPage() {
-  return <div>Welcome to Integrations!</div>;
+  return (
+    <div className="h-full bg-gray-100">
+      <PageHeader title="Integrations" />
+    </div>
+  );
 }

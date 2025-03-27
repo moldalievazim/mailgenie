@@ -23,7 +23,16 @@ export default async function DashboardPage() {
         update: {},
         include: {
           campaigns: true,
-          domains: true,
+          domains: {
+            select: {
+              id: true,
+              name: true,
+              icon: true,
+              userId: true,
+              campaignId: true,
+              billingsId: true,
+            },
+          },
         },
       })
       .catch((error) => {
@@ -33,7 +42,7 @@ export default async function DashboardPage() {
 
     if (!dbUser) {
       return (
-        <div className="flex h-full items-center justify-center">
+        <div className="flex h-full bg-gray-100 items-center justify-center">
           <div className="bg-white p-8 rounded-lg shadow-md">
             <h1 className="text-xl font-semibold text-red-600">
               Error loading user data
